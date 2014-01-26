@@ -181,4 +181,4 @@ class GenericEvent extends Symfony\Component\EventDispatcher\Event implements \A
     {
         return new \ArrayIterator($this->arguments);
     }
-}
+}   

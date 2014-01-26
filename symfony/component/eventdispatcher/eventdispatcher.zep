@@ -25,20 +25,26 @@ namespace Symfony\Component\EventDispatcher;
  *
  * @api
  */
-class EventDispatcher implements Symfony\Component\EventDispatcherInterface
+class EventDispatcher implements Symfony\Component\EventDispatcher\EventDispatcherInterface
 {
-    private $listeners = [];
-    private $sorted = [];
+    private $listeners;
+    private $sorted;
+
+    public function __construct()
+    {
+        let $this->listeners = [];
+        let $this->sorted = [];
+    }
 
     /**
      * @see EventDispatcherInterface::dispatch
      *
      * @api
      */
-    public function dispatch(string $eventName, <Event> $event = null) -> <Event>
+    public function dispatch(string $eventName, <Symfony\Component\EventDispatcher\Event> $event = null) -> <Symfony\Component\EventDispatcher\Event>
     {
         if (null === $event) {
-            let $event = new Event();
+            let $event = new Symfony\Component\EventDispatcher\Event();
         }
 
         $event->setDispatcher($this);
@@ -78,9 +84,9 @@ class EventDispatcher implements Symfony\Component\EventDispatcherInterface
     /**
      * @see EventDispatcherInterface::hasListeners
      */
-    public function hasListeners($eventName = null)
+    public function hasListeners($eventName = null) -> boolean
     {
-        return (Boolean) count($this->getListeners($eventName));
+        return count($this->getListeners($eventName)) > 0;
     }
 
     /**
@@ -99,7 +105,7 @@ class EventDispatcher implements Symfony\Component\EventDispatcherInterface
      */
     public function removeListener($eventName, $listener)
     {
-        var $key;
+        var $key, $priority, $listeners;
 
         if (!isset($this->listeners[$eventName])) {
             return;
@@ -121,17 +127,31 @@ class EventDispatcher implements Symfony\Component\EventDispatcherInterface
      *
      * @api
      */
-    public function addSubscriber(<EventSubscriberInterface> $subscriber)
+    public function addSubscriber(<Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
     {
+        var $eventName, $params, $listener, $priority;
+
         for $eventName, $params in $subscriber->getSubscribedEvents() {
             if (is_string($params)) {
                 $this->addListener($eventName, [$subscriber, $params]);
             } else {
                 if (is_string($params[0])) {
-                    $this->addListener($eventName, [$subscriber, $params[0]], isset($params[1]) ? $params[1] : 0);
+                    if (isset($params[1])) {
+                        let $priority = $params[1];    
+                    } else {
+                        let $priority = 0;
+                    }
+
+                    $this->addListener($eventName, [$subscriber, $params[0]], $priority);
                 } else {
                     for $listener in $params {
-                        $this->addListener($eventName, [$subscriber, $listener[0]], isset($listener[1]) ? $listener[1] : 0);
+                        if (isset($listener[1])) {
+                            let $priority = $listener[1];    
+                        } else {
+                            let $priority = 0;
+                        }
+
+                        $this->addListener($eventName, [$subscriber, $listener[0]], $priority);
                     }
                 }
             }
@@ -141,15 +161,23 @@ class EventDispatcher implements Symfony\Component\EventDispatcherInterface
     /**
      * @see EventDispatcherInterface::removeSubscriber
      */
-    public function removeSubscriber(<EventSubscriberInterface> $subscriber)
+    public function removeSubscriber(<Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
     {
+        var $eventName, $params, $listener, $name;
+
         for $eventName, $params in $subscriber->getSubscribedEvents() {
             if (is_array($params) && is_array($params[0])) {
                 for $listener in $params {
                     $this->removeListener($eventName, [$subscriber, $listener[0]]);
                 }
             } else {
-                $this->removeListener($eventName, [$subscriber, is_string($params) ? $params : $params[0]]);
+                if (is_string($params)) {
+                    let $name = $params;    
+                } else {
+                    let $name = $params[0];
+                }
+
+                $this->removeListener($eventName, [$subscriber, $name]);
             }
         }
     }
@@ -164,8 +192,10 @@ class EventDispatcher implements Symfony\Component\EventDispatcherInterface
      * @param string     $eventName The name of the event to dispatch.
      * @param Event      $event     The event object to pass to the event handlers/listeners.
      */
-    protected function doDispatch($listeners, $eventName, <Event> $event)
+    protected function doDispatch($listeners, $eventName, <Symfony\Component\EventDispatcher\Event> $event)
     {
+        var $listener;
+
         for $listener in $listeners {
             call_user_func($listener, $event, $eventName, $this);
             if ($event->isPropagationStopped()) {
@@ -181,11 +211,13 @@ class EventDispatcher implements Symfony\Component\EventDispatcherInterface
      */
     private function sortListeners($eventName)
     {
+        var $function_name = 'array_merge';
+        
         let $this->sorted[$eventName] = [];
 
         if (isset($this->listeners[$eventName])) {
             krsort($this->listeners[$eventName]);
-            let $this->sorted[$eventName] = call_user_func_array('array_merge', $this->listeners[$eventName]);
+            let $this->sorted[$eventName] = call_user_func_array($function_name, $this->listeners[$eventName]);
         }
     }
 }

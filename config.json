@@ -32,8 +32,8 @@
     },
     "namespace": "symfony",
     "name": "sf2eventdispatcher",
-    "description": "",
-    "author": "",
+    "description": "Symfony2 Event Dispatcher as PHP extension",
+    "author": "Damien Alexandre",
     "version": "0.0.1",
     "verbose": false
 }
