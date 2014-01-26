@@ -30,7 +30,7 @@
         "static-constant-class-folding": true,
         "private-internal-methods": true
     },
-    "namespace": "sf2eventdispatcher",
+    "namespace": "symfony",
     "name": "sf2eventdispatcher",
     "description": "",
     "author": "",

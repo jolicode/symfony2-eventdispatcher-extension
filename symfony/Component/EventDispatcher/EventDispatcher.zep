@@ -35,7 +35,7 @@ class EventDispatcher implements EventDispatcherInterface
      *
      * @api
      */
-    public function dispatch($eventName, Event $event = null) -> Event
+    public function dispatch(string $eventName, Symfony\Component\EventDispatcher\Event $event = null) -> Event
     {
         if (null === $event) {
             $event = new Event();
@@ -66,7 +66,7 @@ class EventDispatcher implements EventDispatcherInterface
             return $this->sorted[$eventName];
         }
 
-        foreach (array_keys($this->listeners) as $eventName) {
+        for eventName in $this->listeners {
             if (!isset($this->sorted[$eventName])) {
                 $this->sortListeners($eventName);
             }
@@ -90,7 +90,7 @@ class EventDispatcher implements EventDispatcherInterface
      */
     public function addListener($eventName, $listener, $priority = 0)
     {
-        $this->listeners[$eventName][$priority][] = $listener;
+        let $this->listeners[$eventName][$priority][] = $listener;
         unset($this->sorted[$eventName]);
     }
 
@@ -173,7 +173,7 @@ class EventDispatcher implements EventDispatcherInterface
      */
     private function sortListeners($eventName)
     {
-        $this->sorted[$eventName] = array();
+        let $this->sorted[$eventName] = [];
 
         if (isset($this->listeners[$eventName])) {
             krsort($this->listeners[$eventName]);
