@@ -27,15 +27,15 @@ class ImmutableEventDispatcher implements EventDispatcherInterface
      *
      * @param EventDispatcherInterface $dispatcher The proxied event dispatcher.
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(<EventDispatcherInterface> $dispatcher)
     {
-        $this->dispatcher = $dispatcher;
+        let $this->dispatcher = $dispatcher;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function dispatch($eventName, Event $event = null)
+    public function dispatch($eventName, <Event> $event = null)
     {
         return $this->dispatcher->dispatch($eventName, $event);
     }
@@ -51,7 +51,7 @@ class ImmutableEventDispatcher implements EventDispatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function addSubscriber(EventSubscriberInterface $subscriber)
+    public function addSubscriber(<EventSubscriberInterface> $subscriber)
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
@@ -67,7 +67,7 @@ class ImmutableEventDispatcher implements EventDispatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function removeSubscriber(EventSubscriberInterface $subscriber)
+    public function removeSubscriber(<EventSubscriberInterface> $subscriber)
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }

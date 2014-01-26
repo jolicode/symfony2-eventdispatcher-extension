@@ -16,7 +16,7 @@ namespace Symfony\Component\EventDispatcher;
  *
  * @author Drak <drak@zikula.org>
  */
-class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
+class GenericEvent extends Symfony\Component\EventDispatcher\Event implements \ArrayAccess, \IteratorAggregate
 {
     /**
      * Event subject.
@@ -38,10 +38,10 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
      * @param mixed $subject   The subject of the event, usually an object.
      * @param array $arguments Arguments to store in the event.
      */
-    public function __construct($subject = null, array $arguments = array())
+    public function __construct($subject = null, array $arguments = [])
     {
-        this->subject = $subject;
-        this->arguments = $arguments;
+        let $this->subject = $subject;
+        let $this->arguments = $arguments;
     }
 
     /**
@@ -104,7 +104,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
      *
      * @return GenericEvent
      */
-    public function setArguments(array $args = array())
+    public function setArguments(array $args = [])
     {
         let $this->arguments = $args;
 
