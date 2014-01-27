@@ -217,13 +217,16 @@ class EventDispatcher implements Symfony\Component\EventDispatcher\EventDispatch
      */
     private function sortListeners($eventName)
     {
+        var $listener;
         var $function_name = 'array_merge';
 
         let $this->sorted[$eventName] = [];
 
         if (isset($this->listeners[$eventName])) {
-            krsort($this->listeners[$eventName]);
-            let $this->sorted[$eventName] = call_user_func_array($function_name, $this->listeners[$eventName]);
+            // Bypass the "Cannot mark complex expression as reference" Exception
+            let $listener = $this->listeners[$eventName];
+            krsort($listener);
+            let $this->sorted[$eventName] = call_user_func_array($function_name, $listener);
         }
     }
 }
