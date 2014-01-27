@@ -96,7 +96,13 @@ class EventDispatcher implements Symfony\Component\EventDispatcher\EventDispatch
      */
     public function addListener($eventName, $listener, $priority = 0)
     {
-        array_push($this->listeners[$eventName][$priority], $listener);
+        // Does this works... ?
+        if (!is_array($this->listeners[$eventName])) {
+            let $this->listeners[$eventName] = [];
+        }
+        let $this->listeners[$eventName][$priority] = $listener;
+
+        //array_push($this->listeners[$eventName][$priority], $listener);
         unset($this->sorted[$eventName]);
     }
 
@@ -212,7 +218,7 @@ class EventDispatcher implements Symfony\Component\EventDispatcher\EventDispatch
     private function sortListeners($eventName)
     {
         var $function_name = 'array_merge';
-        
+
         let $this->sorted[$eventName] = [];
 
         if (isset($this->listeners[$eventName])) {
