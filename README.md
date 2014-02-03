@@ -8,7 +8,7 @@ Some stuffs does not work at the moment:
 - https://github.com/phalcon/zephir/issues/131
 - https://github.com/phalcon/zephir/issues/124
 
-This is a work in progress as we can't even compile the extension yet.
+This is a work in progress as **we can't even compile the extension yet** (oups).
 
 The goal is to be able to run the phpunit tests from the original component against the extension.
 
