@@ -30,7 +30,7 @@ class GenericEvent extends Symfony\Component\EventDispatcher\Event implements \A
      * @param mixed $subject   The subject of the event, usually an object.
      * @param array $arguments Arguments to store in the event.
      */
-    public function __construct($subject = null, array $arguments = [])
+    public function __construct($subject = null, array $arguments)
     {
         let $this->subject = $subject;
         let $this->arguments = $arguments;
@@ -61,7 +61,7 @@ class GenericEvent extends Symfony\Component\EventDispatcher\Event implements \A
             return $this->arguments[$key];
         }
 
-        throw new \InvalidArgumentException(sprintf('%s not found in %s', $key, $this->getName()));
+        throw new \InvalidArgumentException(sprintf("%s not found in %s", $key, $this->getName()));
     }
 
     /**
@@ -96,7 +96,7 @@ class GenericEvent extends Symfony\Component\EventDispatcher\Event implements \A
      *
      * @return GenericEvent
      */
-    public function setArguments(array $args = [])
+    public function setArguments(array $args)
     {
         let $this->arguments = $args;
 

@@ -7,6 +7,7 @@ namespace Symfony\Component\EventDispatcher;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Jordan Alliot <jordan.alliot@gmail.com>
+ * @author Damien Alexandre <dalexandre@jolicode.com>
  */
 class ContainerAwareEventDispatcher extends Symfony\Component\EventDispatcher\EventDispatcher
 {
@@ -35,7 +36,7 @@ class ContainerAwareEventDispatcher extends Symfony\Component\EventDispatcher\Ev
      */
     public function __construct(<Symfony\Component\DependencyInjection\ContainerInterface> $container)
     {
-        let $this->container = $container;
+        let $this->container   = $container;
         let $this->listenerIds = [];
         let $this->listeners   = [];
     }
@@ -81,7 +82,7 @@ class ContainerAwareEventDispatcher extends Symfony\Component\EventDispatcher\Ev
                     let $priority  = $args[2];
 
                     if ($key === sprintf("%s.%s", $serviceId, $method)) {
-                        if ($listener === [$l, $method]) {
+                        if ($listener[0] === $l && $listener[1] === $method) {
                             unset($this->listeners[$eventName][$key]);
                             if (empty($this->listeners[$eventName])) {
                                 unset($this->listeners[$eventName]);
@@ -139,11 +140,13 @@ class ContainerAwareEventDispatcher extends Symfony\Component\EventDispatcher\Ev
      * @param string $serviceId The service ID of the subscriber service
      * @param string $class     The service's class name (which must implement EventSubscriberInterface)
      */
-    public function addSubscriberService($serviceId, $class)
+    public function addSubscriberService($serviceId, string $class)
     {
-        var $eventName, $params, $listener, $event, $priority;
+        var $eventName, $params, $listener, $event, $priority, $events;
 
-        for $eventName, $params in {$class}::getSubscribedEvents() {
+        let $events = {$class}::getSubscribedEvents();
+
+        for $eventName, $params in $events {
             if (is_string($params)) {
                 let $event = $this->listenerIds[$eventName];
                 let $event[] = [$serviceId, $params, 0];
@@ -214,7 +217,7 @@ class ContainerAwareEventDispatcher extends Symfony\Component\EventDispatcher\Ev
                 let $method    = $args[1];
                 let $priority  = $args[2];
                 let $listener  = $this->container->get($serviceId);
-                let $key       = $serviceId.'.'.$method;
+                let $key       = $serviceId.".".$method;
 
                 if (!isset($this->listeners[$eventName][$key])) {
                     $this->addListener($eventName, [$listener, $method], $priority);
