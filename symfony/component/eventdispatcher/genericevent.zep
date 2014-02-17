@@ -8,7 +8,7 @@ namespace Symfony\Component\EventDispatcher;
  * @author Drak <drak@zikula.org>
  * @author Damien Alexandre <dalexandre@jolicode.com>
  */
-class GenericEvent extends Symfony\Component\EventDispatcher\Event implements \ArrayAccess, \IteratorAggregate
+class GenericEvent extends \Symfony\Component\EventDispatcher\Event implements \ArrayAccess, \IteratorAggregate
 {
     /**
      * Event subject.

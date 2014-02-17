@@ -6,7 +6,7 @@ namespace Symfony\Component\EventDispatcher;
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Damien Alexandre <dalexandre@jolicode.com>
  */
-class ImmutableEventDispatcher implements Symfony\Component\EventDispatcher\EventDispatcherInterface
+class ImmutableEventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatcherInterface
 {
     /**
      * The proxied dispatcher.

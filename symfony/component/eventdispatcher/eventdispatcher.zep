@@ -17,7 +17,7 @@ namespace Symfony\Component\EventDispatcher;
  *
  * @api
  */
-class EventDispatcher implements Symfony\Component\EventDispatcher\EventDispatcherInterface
+class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatcherInterface
 {
     private $listeners;
     private $sorted;

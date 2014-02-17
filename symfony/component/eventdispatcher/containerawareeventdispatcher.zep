@@ -9,7 +9,7 @@ namespace Symfony\Component\EventDispatcher;
  * @author Jordan Alliot <jordan.alliot@gmail.com>
  * @author Damien Alexandre <dalexandre@jolicode.com>
  */
-class ContainerAwareEventDispatcher extends Symfony\Component\EventDispatcher\EventDispatcher
+class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\EventDispatcher
 {
     /**
      * The container from where services are loaded
