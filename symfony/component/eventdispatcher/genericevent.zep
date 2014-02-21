@@ -30,8 +30,12 @@ class GenericEvent extends \Symfony\Component\EventDispatcher\Event implements \
      * @param mixed $subject   The subject of the event, usually an object.
      * @param array $arguments Arguments to store in the event.
      */
-    public function __construct($subject = null, array $arguments)
+    public function __construct($subject = null, $arguments = null)
     {
+        if ($arguments === null) {
+            let $arguments = [];
+        }
+
         let $this->subject = $subject;
         let $this->arguments = $arguments;
     }
@@ -110,9 +114,9 @@ class GenericEvent extends \Symfony\Component\EventDispatcher\Event implements \
      *
      * @return boolean
      */
-    public function hasArgument($key)
+    public function hasArgument($key) -> boolean
     {
-        return array_key_exists($key, $this->arguments);
+        return isset $this->arguments[$key];
     }
 
     /**
@@ -148,7 +152,7 @@ class GenericEvent extends \Symfony\Component\EventDispatcher\Event implements \
     public function offsetUnset($key)
     {
         if ($this->hasArgument($key)) {
-            unset($this->arguments[$key]);
+            unset $this->arguments[$key];
         }
     }
 

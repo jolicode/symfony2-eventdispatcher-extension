@@ -35,14 +35,14 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      */
     public function dispatch(string $eventName, <\Symfony\Component\EventDispatcher\Event> $event = null) -> <Symfony\Component\EventDispatcher\Event>
     {
-        if (null === $event) {
+        if ($event === null) {
             let $event = new \Symfony\Component\EventDispatcher\Event();
         }
 
         $event->setDispatcher($this);
         $event->setName($eventName);
 
-        if (!isset($this->listeners[$eventName])) {
+        if !isset $this->listeners[$eventName] {
             return $event;
         }
 
@@ -56,8 +56,8 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      */
     public function getListeners($eventName = null)
     {
-        if (null !== $eventName) {
-            if (!isset($this->sorted[$eventName])) {
+        if ($eventName !== null) {
+            if !isset $this->sorted[$eventName] {
                 $this->sortListeners($eventName);
             }
 
@@ -65,7 +65,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
         }
 
         for eventName in $this->listeners {
-            if (!isset($this->sorted[$eventName])) {
+            if !isset $this->sorted[$eventName] {
                 $this->sortListeners($eventName);
             }
         }
@@ -88,20 +88,44 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      */
     public function addListener($eventName, $listener, $priority = 0)
     {
-        // Does this works... ?
-        if (!is_array($this->listeners[$eventName])) {
+        var $tmp;
+
+        if !isset $this->listeners[$eventName] {
             let $this->listeners[$eventName] = [];
         }
-        let $this->listeners[$eventName][$priority] = $listener;
+        if !isset $this->listeners[$eventName][$priority] {
+            let $this->listeners[$eventName][$priority] = [];
+        }
 
-        //array_push($this->listeners[$eventName][$priority], $listener);
-        unset($this->sorted[$eventName]);
+/**
+         else {
+            if (!is_array($this->listeners[$eventName][$priority])) {
+                let $this->listeners[$eventName][$priority] = [];
+            }
+
+            let $tmp = $this->listeners[$eventName][$priority][]; // limitation of Zephir
+            let $tmp[] = $listener;
+            let $this->listeners[$eventName][$priority] = $tmp;
+        }
+
+
+        array_push($this->listeners[$eventName][$priority], $listener);
+        
+        unset $this->sorted[$eventName];**/
+
+        let $tmp = $this->listeners[$eventName][$priority];
+        let $tmp[] = $listener;
+        let $this->listeners[$eventName][$priority] = $tmp;
+
+        if isset $this->sorted[$eventName] {
+            unset $this->sorted[$eventName];
+        }
     }
 
     /**
      * @see EventDispatcherInterface::removeListener
      */
-    public function removeListener($eventName, $listener)
+    public function removeListener($eventName, $listener) -> void
     {
         var $key, $priority, $listeners;
 
@@ -113,7 +137,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
         for $priority, $listeners in $this->listeners[$eventName] {
             let $key = array_search($listener, $listeners, true);
 
-            if (false !== $key) {
+            if ($key !== false) {
                 unset $this->listeners[$eventName][$priority][$key];
                 unset $this->sorted[$eventName];
             }
@@ -210,11 +234,11 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
     private function sortListeners($eventName)
     {
         var $listener;
-        var $function_name = 'array_merge';
+        char $function_name = 'array_merge';
 
         let $this->sorted[$eventName] = [];
 
-        if (isset($this->listeners[$eventName])) {
+        if isset $this->listeners[$eventName] {
             // Bypass the "Cannot mark complex expression as reference" Exception
             let $listener = $this->listeners[$eventName];
             krsort($listener);
