@@ -70,8 +70,7 @@ class Event
      *
      * @api
      */
-    //public function setDispatcher(Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher)
-    public function setDispatcher(<Symfony\Component\EventDispatcher\EventDispatcherInterface> $dispatcher)
+    public function setDispatcher(<\Symfony\Component\EventDispatcher\EventDispatcherInterface> $dispatcher)
     {
         let $this->dispatcher = $dispatcher;
     }

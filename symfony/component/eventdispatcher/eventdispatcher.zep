@@ -33,10 +33,10 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      *
      * @api
      */
-    public function dispatch(string $eventName, <Symfony\Component\EventDispatcher\Event> $event = null) -> <Symfony\Component\EventDispatcher\Event>
+    public function dispatch(string $eventName, <\Symfony\Component\EventDispatcher\Event> $event = null) -> <Symfony\Component\EventDispatcher\Event>
     {
         if (null === $event) {
-            let $event = new Symfony\Component\EventDispatcher\Event();
+            let $event = new \Symfony\Component\EventDispatcher\Event();
         }
 
         $event->setDispatcher($this);
@@ -125,7 +125,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      *
      * @api
      */
-    public function addSubscriber(<Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
+    public function addSubscriber(<\Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
     {
         var $eventName, $params, $listener, $priority;
 
@@ -159,7 +159,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
     /**
      * @see EventDispatcherInterface::removeSubscriber
      */
-    public function removeSubscriber(<Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
+    public function removeSubscriber(<\Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
     {
         var $eventName, $params, $listener, $name;
 
@@ -190,7 +190,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      * @param string     $eventName The name of the event to dispatch.
      * @param Event      $event     The event object to pass to the event handlers/listeners.
      */
-    protected function doDispatch($listeners, $eventName, <Symfony\Component\EventDispatcher\Event> $event)
+    protected function doDispatch($listeners, $eventName, <\Symfony\Component\EventDispatcher\Event> $event)
     {
         var $listener;
 

@@ -19,7 +19,7 @@ class ImmutableEventDispatcher implements \Symfony\Component\EventDispatcher\Eve
      *
      * @param EventDispatcherInterface $dispatcher The proxied event dispatcher.
      */
-    public function __construct(<EventDispatcherInterface> $dispatcher)
+    public function __construct(<\Symfony\Component\EventDispatcher\EventDispatcherInterface> $dispatcher)
     {
         let $this->dispatcher = $dispatcher;
     }
@@ -27,7 +27,7 @@ class ImmutableEventDispatcher implements \Symfony\Component\EventDispatcher\Eve
     /**
      * {@inheritdoc}
      */
-    public function dispatch($eventName, <Event> $event = null)
+    public function dispatch($eventName, <\Symfony\Component\EventDispatcher\Event> $event = null)
     {
         return $this->dispatcher->dispatch($eventName, $event);
     }
@@ -43,7 +43,7 @@ class ImmutableEventDispatcher implements \Symfony\Component\EventDispatcher\Eve
     /**
      * {@inheritdoc}
      */
-    public function addSubscriber(<EventSubscriberInterface> $subscriber)
+    public function addSubscriber(<\Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
     {
         throw new \BadMethodCallException("Unmodifiable event dispatchers must not be modified.");
     }
@@ -59,7 +59,7 @@ class ImmutableEventDispatcher implements \Symfony\Component\EventDispatcher\Eve
     /**
      * {@inheritdoc}
      */
-    public function removeSubscriber(<EventSubscriberInterface> $subscriber)
+    public function removeSubscriber(<\Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
     {
         throw new \BadMethodCallException("Unmodifiable event dispatchers must not be modified.");
     }

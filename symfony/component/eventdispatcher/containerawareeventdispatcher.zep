@@ -34,7 +34,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      *
      * @param ContainerInterface $container A ContainerInterface instance
      */
-    public function __construct(<Symfony\Component\DependencyInjection\ContainerInterface> $container)
+    public function __construct(<\Symfony\Component\DependencyInjection\ContainerInterface> $container)
     {
         let $this->container   = $container;
         let $this->listenerIds = [];
@@ -187,7 +187,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      *
      * @throws \InvalidArgumentException if the service is not defined
      */
-    public function dispatch($eventName, <Symfony\Component\EventDispatcher\Event> $event = null)
+    public function dispatch($eventName, <\Symfony\Component\EventDispatcher\Event> $event = null)
     {
         $this->lazyLoad($eventName);
 
