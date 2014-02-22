@@ -9,8 +9,8 @@ before_install:
 install:
   - cd /tmp
   - wget https://github.com/phalcon/zephir/archive/master.zip
-  - unzip -q master.zip
-  - cd zephir
+  - unzip -q master
+  - cd zephir-master
   - sudo ./install -c
   - zephir
 
