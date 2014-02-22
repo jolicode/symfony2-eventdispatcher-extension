@@ -8,8 +8,15 @@ before_install:
 # TODO: fix the Zephir version via Composer
 install:
   - cd /tmp
-  - wget https://github.com/phalcon/zephir/archive/master.zip
-  - unzip -q master
+  - wget https://github.com/json-c/json-c/archive/master.zip -O json-c
+  - unzip -q json-c
+  - cd json-c-master
+  - sh autogen.sh
+  - ./configure
+  - make
+  - make install
+  - wget https://github.com/phalcon/zephir/archive/master.zip -O zephir
+  - unzip -q zephir
   - cd zephir-master
   - sudo ./install -c
   - zephir
