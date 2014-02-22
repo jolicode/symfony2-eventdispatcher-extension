@@ -54,19 +54,20 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
     /**
      * @see EventDispatcherInterface::getListeners
      */
-    public function getListeners($eventName = null)
+    public function getListeners(string $eventName = null)
     {
+        var arrayEventName, event;
+
         if ($eventName !== null) {
             if !isset $this->sorted[$eventName] {
                 $this->sortListeners($eventName);
             }
-
             return $this->sorted[$eventName];
         }
 
-        for eventName in $this->listeners {
-            if !isset $this->sorted[$eventName] {
-                $this->sortListeners($eventName);
+        for arrayEventName, event in $this->listeners {
+            if !isset $this->sorted[arrayEventName] {
+                $this->sortListeners(arrayEventName);
             }
         }
 
@@ -86,36 +87,25 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      *
      * @api
      */
-    public function addListener($eventName, $listener, $priority = 0)
+    public function addListener(string! $eventName, $listener, long! $priority = 0) -> void
     {
-        var $tmp;
 
         if !isset $this->listeners[$eventName] {
             let $this->listeners[$eventName] = [];
         }
+
         if !isset $this->listeners[$eventName][$priority] {
             let $this->listeners[$eventName][$priority] = [];
         }
 
-/**
-         else {
-            if (!is_array($this->listeners[$eventName][$priority])) {
-                let $this->listeners[$eventName][$priority] = [];
-            }
-
-            let $tmp = $this->listeners[$eventName][$priority][]; // limitation of Zephir
-            let $tmp[] = $listener;
-            let $this->listeners[$eventName][$priority] = $tmp;
-        }
-
+        
+//        let $tmp = $this->listeners[$eventName][$priority];
+//        let $tmp[] = $listener;
+//        let $this->listeners[$eventName][$priority] = $tmp;
 
         array_push($this->listeners[$eventName][$priority], $listener);
-        
-        unset $this->sorted[$eventName];**/
+        //let $this->listeners[$eventName][$priority][] = $listener;
 
-        let $tmp = $this->listeners[$eventName][$priority];
-        let $tmp[] = $listener;
-        let $this->listeners[$eventName][$priority] = $tmp;
 
         if isset $this->sorted[$eventName] {
             unset $this->sorted[$eventName];
@@ -231,10 +221,9 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      *
      * @param string $eventName The name of the event.
      */
-    private function sortListeners($eventName)
+    private function sortListeners(string $eventName) -> void
     {
         var $listener;
-        char $function_name = 'array_merge';
 
         let $this->sorted[$eventName] = [];
 
@@ -242,7 +231,9 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
             // Bypass the "Cannot mark complex expression as reference" Exception
             let $listener = $this->listeners[$eventName];
             krsort($listener);
-            let $this->sorted[$eventName] = call_user_func_array($function_name, $listener);
+            let $this->sorted[$eventName] = call_user_func_array("array_merge", $listener);
+
+            let $this->listeners[$eventName] = $listener;
         }
     }
 }

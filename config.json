@@ -31,7 +31,7 @@
         "private-internal-methods": true
     },
     "namespace": "symfony",
-    "name": "sf2eventdispatcher",
+    "name": "sf2eventdispatcher_ext",
     "description": "Symfony2 Event Dispatcher as PHP extension",
     "author": "Damien Alexandre",
     "version": "0.0.1",
