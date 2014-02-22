@@ -1,6 +1,8 @@
 Symfony2 Event Dispatcher as PHP extension
 ==========================================
 
+[![Build Status](https://travis-ci.org/jolicode/symfony2-eventdispatcher-extension.png?branch=master)](https://travis-ci.org/jolicode/symfony2-eventdispatcher-extension)
+
 This is an experimental WIP of the Symfony2 [EventDispatcher](https://github.com/symfony/EventDispatcher/tree/2.4) (version 2.4) rewritten in [Zephir](http://zephir-lang.com/index.html).
 
 Some stuffs does not work at the moment:
@@ -9,7 +11,7 @@ Some stuffs does not work at the moment:
 - https://github.com/phalcon/zephir/issues/124
 - SegFault... :cry:
 
-This is a work in progress, tests are red even if the extension compile.
+This is a work in progress, tests are red even if the extension compile. Also, do not use this in production. Yet.
 The goal is to be able to run the phpunit tests from the original component against the extension.
 
 Install

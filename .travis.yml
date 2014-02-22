@@ -25,7 +25,6 @@ before_script:
   - cd $TRAVIS_BUILD_DIR && zephir build
   - composer install
 
-script: which phpunit
-#script: php -dextension=symfony.so `which phpunit` --debug tests/ContainerAwareEventDispatcherTest.php
+script: php -dextension=symfony.so /home/travis/.phpenv/shims/phpunit --debug tests/ContainerAwareEventDispatcherTest.php
 
 #echo "extension=<extension>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
