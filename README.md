@@ -7,9 +7,9 @@ Some stuffs does not work at the moment:
 
 - https://github.com/phalcon/zephir/issues/131
 - https://github.com/phalcon/zephir/issues/124
+- SegFault... :cry:
 
-This is a work in progress as **we can't even compile the extension yet** (oups).
-
+This is a work in progress, tests are red even if the extension compile.
 The goal is to be able to run the phpunit tests from the original component against the extension.
 
 Install
@@ -20,7 +20,8 @@ You will need [Zephir](https://github.com/phalcon/zephir) to build and install t
 Running the test
 ----------------
 
-To be done.
+    composer install
+    zephir build && php -dextension=symfony.so /usr/local/bin/phpunit
 
 License
 -------
