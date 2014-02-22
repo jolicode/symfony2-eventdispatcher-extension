@@ -87,7 +87,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      *
      * @api
      */
-    public function addListener(string! $eventName, $listener, long! $priority = 0) -> void
+    public function addListener(string $eventName, $listener, long $priority = 0) -> void
     {
 
         if !isset $this->listeners[$eventName] {
@@ -119,17 +119,19 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
     {
         var $key, $priority, $listeners;
 
-        if (!isset($this->listeners[$eventName])) {
+        if !isset $this->listeners[$eventName] {
             return;
         }
 
         //foreach ($this->listeners[$eventName] as $priority => $listeners) {
         for $priority, $listeners in $this->listeners[$eventName] {
             let $key = array_search($listener, $listeners, true);
-
             if ($key !== false) {
-                unset $this->listeners[$eventName][$priority][$key];
-                unset $this->sorted[$eventName];
+                //var_dump($eventName, $priority, $key);
+                //unset($this->listeners[$eventName][$priority][$key]);
+                //unset($this->sorted[$eventName]);
+                let $this->listeners[$eventName][$priority][$key] = [];
+                let $this->sorted[$eventName] = [];
             }
         }
     }
@@ -228,6 +230,9 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
         let $this->sorted[$eventName] = [];
 
         if isset $this->listeners[$eventName] {
+
+ //           var_dump($this->listeners[$eventName]); 
+
             // Bypass the "Cannot mark complex expression as reference" Exception
             let $listener = $this->listeners[$eventName];
             krsort($listener);
