@@ -22,7 +22,7 @@ install:
   - zephir
 
 before_script:
-  - zephir build
+  - cd $TRAVIS_BUILD_DIR && zephir build
   - composer install
 
 script: php -dextension=symfony.so /usr/local/bin/phpunit --debug tests/ContainerAwareEventDispatcherTest.php
