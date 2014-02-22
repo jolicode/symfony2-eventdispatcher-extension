@@ -53,11 +53,11 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      *
      * @throws \InvalidArgumentException
      */
-    public function addListenerService($eventName, $callback, $priority = 0)
+    public function addListenerService(string $eventName, $callback, long $priority = 0) -> void
     {
         var $listener_service;
 
-        if (!is_array($callback) || 2 !== count($callback)) {
+        if (typeof $callback != "array" || count($callback) !== 2) {
             throw new \InvalidArgumentException("Expected an array(\"service\", \"method\") argument");
         }
 
@@ -86,11 +86,15 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
 
                     if ($key === sprintf("%s.%s", $serviceId, $method)) {
                         if ($listener[0] === $l && $listener[1] === $method) {
-                            unset $this->listeners[$eventName][$key];
+                            //unset $this->listeners[$eventName][$key];
+                            let $this->listeners[$eventName][$key] = [];
+
                             if (empty($this->listeners[$eventName])) {
                                 unset $this->listeners[$eventName];
                             }
-                            unset $this->listenerIds[$eventName][$i];
+                            //unset $this->listenerIds[$eventName][$i];
+                            let $this->listenerIds[$eventName][$i] = [];
+
                             if (empty($this->listenerIds[$eventName])) {
                                 unset $this->listenerIds[$eventName];
                             }
@@ -106,7 +110,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
     /**
      * @see EventDispatcherInterface::hasListeners
      */
-    public function hasListeners($eventName = null)
+    public function hasListeners($eventName = null) -> boolean
     {
         if ($eventName === null) {
             return count($this->listenerIds) > 0 || count($this->listeners) > 0;
@@ -143,7 +147,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      * @param string $serviceId The service ID of the subscriber service
      * @param string $class     The service's class name (which must implement EventSubscriberInterface)
      */
-    public function addSubscriberService($serviceId, string $class)
+    public function addSubscriberService(string $serviceId, string $class)
     {
         var $eventName, $params, $listener, $event, $priority, $events;
 
@@ -190,8 +194,10 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      *
      * @throws \InvalidArgumentException if the service is not defined
      */
-    public function dispatch($eventName, <\Symfony\Component\EventDispatcher\Event> $event = null)
+    public function dispatch(string $eventName, <\Symfony\Component\EventDispatcher\Event> $event = null)
     {
+        //var_dump($eventName);
+
         $this->lazyLoad($eventName);
 
         return parent::dispatch($eventName, $event);
@@ -210,7 +216,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      *                          the event is the name of the method that is
      *                          invoked on listeners.
      */
-    protected function lazyLoad($eventName) -> void
+    protected function lazyLoad(string $eventName) -> void
     {
         var $serviceId, $method, $priority, $args, $listener, $key, $callback;
 

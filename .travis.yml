@@ -1,0 +1,21 @@
+language: php
+php:
+  - 5.5
+
+before_install:
+  - sudo apt-get install re2c libpcre3-dev
+
+# TODO: fix the Zephir version via Composer
+install:
+  - cd /tmp
+  - git clone git@github.com:phalcon/zephir.git
+  - cd zephir
+  - sudo ./install -c
+  - zephir
+
+before_script:
+  - zephir build
+
+script: php -dextension=symfony.so /usr/local/bin/phpunit --debug tests/ContainerAwareEventDispatcherTest.php
+
+#echo "extension=<extension>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini

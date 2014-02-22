@@ -89,7 +89,6 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      */
     public function addListener(string $eventName, $listener, long $priority = 0) -> void
     {
-
         if !isset $this->listeners[$eventName] {
             let $this->listeners[$eventName] = [];
         }
@@ -103,8 +102,12 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
 //        let $tmp[] = $listener;
 //        let $this->listeners[$eventName][$priority] = $tmp;
 
+//var_dump($eventName, $priority, $listener, $this->listeners);
+//return;
+
         array_push($this->listeners[$eventName][$priority], $listener);
         //let $this->listeners[$eventName][$priority][] = $listener;
+
 
 
         if isset $this->sorted[$eventName] {
