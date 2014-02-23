@@ -25,6 +25,7 @@ before_script:
   - cd $TRAVIS_BUILD_DIR && zephir build
   - composer install
 
-script: php -dextension=symfony.so /home/travis/.phpenv/shims/phpunit --debug tests/ContainerAwareEventDispatcherTest.php
+# This hardcoded path is to change :/
+script: php -dextension=symfony.so /home/travis/.phpenv/versions/5.5.9/bin/phpunit --debug tests/ContainerAwareEventDispatcherTest.php
 
 #echo "extension=<extension>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
