@@ -86,15 +86,12 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
 
                     if ($key === sprintf("%s.%s", $serviceId, $method)) {
                         if ($listener[0] === $l && $listener[1] === $method) {
-                            //unset $this->listeners[$eventName][$key];
-                            let $this->listeners[$eventName][$key] = [];
-
+                            unset $this->listeners[$eventName][$key];
                             if (empty($this->listeners[$eventName])) {
                                 unset $this->listeners[$eventName];
                             }
-                            //unset $this->listenerIds[$eventName][$i];
-                            let $this->listenerIds[$eventName][$i] = [];
 
+                            unset $this->listenerIds[$eventName][$i];
                             if (empty($this->listenerIds[$eventName])) {
                                 unset $this->listenerIds[$eventName];
                             }
@@ -229,7 +226,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
                 let $key       = $serviceId.".".$method;
                 let $callback  = [$listener, $method];
 
-                if isset $this->listeners[$eventName][$key] {
+                if isset $this->listeners[$eventName] && isset $this->listeners[$eventName][$key] {
                     if ($listener !== $this->listeners[$eventName][$key]) {
                         parent::removeListener($eventName, [$this->listeners[$eventName][$key], $method]);
                         $this->addListener($eventName, $callback, $priority);

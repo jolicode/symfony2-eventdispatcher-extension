@@ -26,6 +26,6 @@ before_script:
   - composer install
 
 # This hardcoded path is to change :/
-script: php -dextension=symfony.so /home/travis/.phpenv/versions/5.5.9/bin/phpunit --debug tests/ContainerAwareEventDispatcherTest.php
+script: php -dextension=symfony.so /home/travis/.phpenv/versions/5.5.9/bin/phpunit
 
 #echo "extension=<extension>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
