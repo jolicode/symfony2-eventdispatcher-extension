@@ -150,14 +150,15 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
 
         let $events = call_user_func(sprintf("%s::getSubscribedEvents", $class));
 
+
         for $eventName, $params in $events {
             if (is_string($params)) {
-                let $event = $this->listenerIds[$eventName];
+                let $event = isset $this->listenerIds[$eventName] ? $this->listenerIds[$eventName] : [];
                 let $event[] = [$serviceId, $params, 0];
                 let $this->listenerIds[$eventName] = $event;
             } else {
                 if (is_string($params[0])) {
-                    let $event = $this->listenerIds[$eventName];
+                    let $event = isset $this->listenerIds[$eventName] ? $this->listenerIds[$eventName] : [];
                     if (isset($params[1])) {
                         let $priority = $params[1];    
                     } else {
@@ -168,7 +169,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
                     let $this->listenerIds[$eventName] = $event;
                 } else {
                     for $listener in $params {
-                        let $event = $this->listenerIds[$eventName];
+                        let $event = isset $this->listenerIds[$eventName] ? $this->listenerIds[$eventName] : [];
                         if (isset($listener[1])) {
                             let $priority = $listener[1];    
                         } else {
