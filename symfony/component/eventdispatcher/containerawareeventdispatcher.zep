@@ -22,13 +22,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      * @var array
      */
     private $listenerIds;
-
-    /**
-     * The services registered as listeners
-     * @var array
-     */
-    private $listeners;
-
+    
     /**
      * Constructor.
      *
@@ -149,7 +143,6 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
         var $eventName, $params, $listener, $event, $priority, $events;
 
         let $events = call_user_func(sprintf("%s::getSubscribedEvents", $class));
-
 
         for $eventName, $params in $events {
             if (is_string($params)) {

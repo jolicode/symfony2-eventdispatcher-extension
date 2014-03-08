@@ -19,8 +19,8 @@ namespace Symfony\Component\EventDispatcher;
  */
 class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatcherInterface
 {
-    private $listeners;
-    private $sorted;
+    protected $listeners;
+    protected $sorted;
 
     public function __construct()
     {
@@ -100,7 +100,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
         array_push($this->listeners[$eventName][$priority], $listener);
 
         if isset $this->sorted[$eventName] {
-            unset $this->sorted[$eventName];
+            unset($this->sorted[$eventName]);
         }
     }
 
@@ -115,7 +115,6 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
             return;
         }
 
-        //foreach ($this->listeners[$eventName] as $priority => $listeners) {
         for $priority, $listeners in $this->listeners[$eventName] {
             let $key = array_search($listener, $listeners, true);
             if ($key !== false) {
@@ -201,7 +200,6 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
     protected function doDispatch($listeners, $eventName, <\Symfony\Component\EventDispatcher\Event> $event)
     {
         var $listener;
-
         for $listener in $listeners {
             call_user_func($listener, $event, $eventName, $this);
             if ($event->isPropagationStopped()) {
@@ -215,21 +213,19 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      *
      * @param string $eventName The name of the event.
      */
-    private function sortListeners(string $eventName) -> void
+    protected function sortListeners(string $eventName) -> void
     {
         var $listener;
 
         let $this->sorted[$eventName] = [];
 
         if isset $this->listeners[$eventName] {
-
- //           var_dump($this->listeners[$eventName]); 
-
             // Bypass the "Cannot mark complex expression as reference" Exception
             let $listener = $this->listeners[$eventName];
             krsort($listener);
-            let $this->sorted[$eventName] = call_user_func_array("array_merge", $listener);
 
+            let $this->sorted[$eventName] = call_user_func_array("array_merge", $listener);
+            //var_dump($this->sorted[$eventName]);
             let $this->listeners[$eventName] = $listener;
         }
     }
