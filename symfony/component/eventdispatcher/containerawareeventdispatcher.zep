@@ -22,7 +22,13 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      * @var array
      */
     private $listenerIds;
-    
+
+    /**
+     * The services registered as listeners - renamed for Zephir private handling
+     * @var array
+     */
+    private $listeners_container;
+
     /**
      * Constructor.
      *
@@ -30,8 +36,9 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      */
     public function __construct(<\Symfony\Component\DependencyInjection\ContainerInterface> $container)
     {
-        parent::__construct();
+        parent::__construct(); // Needed for Zephir init as array
 
+        let $this->listeners_container = [];
         let $this->container   = $container;
         let $this->listenerIds = [];
     }
@@ -71,8 +78,8 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
 
         $this->lazyLoad($eventName);
 
-        if isset $this->listeners[$eventName] {
-            for $key, $l in $this->listeners[$eventName] {
+        if isset $this->listeners_container[$eventName] {
+            for $key, $l in $this->listeners_container[$eventName] {
                 for $i, $args in $this->listenerIds[$eventName] {
 
                     let $serviceId = $args[0];
@@ -81,9 +88,9 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
 
                     if ($key === sprintf("%s.%s", $serviceId, $method)) {
                         if ($listener[0] === $l && $listener[1] === $method) {
-                            unset $this->listeners[$eventName][$key];
-                            if (empty($this->listeners[$eventName])) {
-                                unset $this->listeners[$eventName];
+                            unset $this->listeners_container[$eventName][$key];
+                            if (empty($this->listeners_container[$eventName])) {
+                                unset $this->listeners_container[$eventName];
                             }
 
                             unset $this->listenerIds[$eventName][$i];
@@ -105,7 +112,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
     public function hasListeners($eventName = null) -> boolean
     {
         if ($eventName === null) {
-            return count($this->listenerIds) > 0 || count($this->listeners) > 0;
+            return count($this->listenerIds) > 0 || count($this->listeners_container) > 0;
         }
 
         if isset $this->listenerIds[$eventName] {
@@ -209,16 +216,16 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
                 let $key       = $serviceId.".".$method;
                 let $callback  = [$listener, $method];
 
-                if !isset $this->listeners[$eventName] || !isset $this->listeners[$eventName][$key] {
+                if !isset $this->listeners_container[$eventName] || !isset $this->listeners_container[$eventName][$key] {
                     $this->addListener($eventName, $callback, $priority);
                 } else {
-                    if $listener !== $this->listeners[$eventName][$key] {
-                        parent::removeListener($eventName, [$this->listeners[$eventName][$key], $method]);
+                    if $listener !== $this->listeners_container[$eventName][$key] {
+                        parent::removeListener($eventName, [$this->listeners_container[$eventName][$key], $method]);
                         $this->addListener($eventName, $callback, $priority);
                     }
                 }
 
-                let $this->listeners[$eventName][$key] = $listener;
+                let $this->listeners_container[$eventName][$key] = $listener;
             }
         }
     }

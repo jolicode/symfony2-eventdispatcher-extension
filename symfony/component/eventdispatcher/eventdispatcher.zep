@@ -19,7 +19,7 @@ namespace Symfony\Component\EventDispatcher;
  */
 class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatcherInterface
 {
-    protected $listeners;
+    private $listeners;
     protected $sorted;
 
     public function __construct()
