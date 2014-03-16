@@ -134,29 +134,17 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      */
     public function addSubscriber(<\Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
     {
-        var $eventName, $params, $listener, $priority;
+        var $eventName, $params, $listener;
 
         for $eventName, $params in $subscriber->getSubscribedEvents() {
             if (is_string($params)) {
                 $this->addListener($eventName, [$subscriber, $params]);
             } else {
                 if (is_string($params[0])) {
-                    if (isset($params[1])) {
-                        let $priority = $params[1];    
-                    } else {
-                        let $priority = 0;
-                    }
-
-                    $this->addListener($eventName, [$subscriber, $params[0]], $priority);
+                    $this->addListener($eventName, [$subscriber, $params[0]], (isset $params[1] ? $params[1] : 0));
                 } else {
                     for $listener in $params {
-                        if (isset($listener[1])) {
-                            let $priority = $listener[1];    
-                        } else {
-                            let $priority = 0;
-                        }
-
-                        $this->addListener($eventName, [$subscriber, $listener[0]], $priority);
+                        $this->addListener($eventName, [$subscriber, $listener[0]], (isset $listener[1] ? $listener[1] : 0));
                     }
                 }
             }
@@ -168,7 +156,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      */
     public function removeSubscriber(<\Symfony\Component\EventDispatcher\EventSubscriberInterface> $subscriber)
     {
-        var $eventName, $params, $listener, $name;
+        var $eventName, $params, $listener;
 
         for $eventName, $params in $subscriber->getSubscribedEvents() {
             if (is_array($params) && is_array($params[0])) {
@@ -176,13 +164,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
                     $this->removeListener($eventName, [$subscriber, $listener[0]]);
                 }
             } else {
-                if (is_string($params)) {
-                    let $name = $params;    
-                } else {
-                    let $name = $params[0];
-                }
-
-                $this->removeListener($eventName, [$subscriber, $name]);
+                $this->removeListener($eventName, [$subscriber, (is_string($params) ? $params : $params[0])]);
             }
         }
     }
@@ -215,18 +197,12 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      */
     protected function sortListeners(string $eventName) -> void
     {
-        var $listener;
-
         let $this->sorted[$eventName] = [];
 
-        if isset $this->listeners[$eventName] {
-            // Bypass the "Cannot mark complex expression as reference" Exception
-            let $listener = $this->listeners[$eventName];
-            krsort($listener);
+        if isset $this->listeners[$eventName] && !empty $this->listeners[$eventName] {
+            krsort($this->listeners[$eventName]);
 
-            let $this->sorted[$eventName] = call_user_func_array("array_merge", $listener);
-            //var_dump($this->sorted[$eventName]);
-            let $this->listeners[$eventName] = $listener;
+            let $this->sorted[$eventName] = call_user_func_array("array_merge", $this->listeners[$eventName]);
         }
     }
 }
