@@ -42,9 +42,12 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
         $event->setDispatcher($this);
         $event->setName($eventName);
 
+        //var_dump($this->getListeners($eventName));die();
+
         if !isset $this->listeners[$eventName] {
             return $event;
         }
+
 
         $this->doDispatch($this->getListeners($eventName), $eventName, $event);
 
@@ -87,10 +90,24 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      *
      * @api
      */
-    public function addListener(string $eventName, $listener, long $priority = 0) -> void
+    public function addListener(string $eventName, $listener, int $priority = 0) -> void
     {
+        // Fucking lolz :)
+        var tmp, tmp_list, tmp_list_key;
+        
         if !isset $this->listeners[$eventName] {
-            let $this->listeners[$eventName] = [];
+            let tmp = [];
+
+            // We copy the full array manualy just so we can add an entry.
+            // This is shit, Zephir can't handle let $this->listeners[$eventName] = []; !!!
+            for tmp_list_key, tmp_list in $this->listeners {
+                if tmp_list != NULL || !empty(tmp_list) {
+                    let tmp[tmp_list_key] = tmp_list;
+                }
+            }
+
+            let tmp[$eventName] = [];
+            let $this->listeners = tmp;
         }
 
         if !isset $this->listeners[$eventName][$priority] {
@@ -98,8 +115,9 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
         }
 
         array_push($this->listeners[$eventName][$priority], $listener);
-
+        
         if isset $this->sorted[$eventName] {
+            //let $this->sorted[$eventName] = [];
             unset($this->sorted[$eventName]);
         }
     }
@@ -183,7 +201,9 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
     {
         var $listener;
         for $listener in $listeners {
-            call_user_func($listener, $event, $eventName, $this);
+            if !empty($listener) {
+                call_user_func($listener, $event, $eventName, $this);
+            }
             if ($event->isPropagationStopped()) {
                 break;
             }
@@ -202,6 +222,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
         if isset $this->listeners[$eventName] && !empty $this->listeners[$eventName] {
             krsort($this->listeners[$eventName]);
 
+            // THERE IS AN ERROR HERE, we get sometime a listener            
             let $this->sorted[$eventName] = call_user_func_array("array_merge", $this->listeners[$eventName]);
         }
     }

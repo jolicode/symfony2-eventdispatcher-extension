@@ -27,7 +27,7 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      * The services registered as listeners - renamed for Zephir private handling
      * @var array
      */
-    private $listeners_container;
+    protected $listeners_container;
 
     /**
      * Constructor.
@@ -183,8 +183,6 @@ class ContainerAwareEventDispatcher extends \Symfony\Component\EventDispatcher\E
      */
     public function dispatch(string! $eventName, <\Symfony\Component\EventDispatcher\Event> $event = null)
     {
-        //var_dump($eventName);
-
         $this->lazyLoad($eventName);
 
         return parent::dispatch($eventName, $event);
