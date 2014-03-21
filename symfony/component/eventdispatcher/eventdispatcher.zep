@@ -48,7 +48,6 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
             return $event;
         }
 
-
         $this->doDispatch($this->getListeners($eventName), $eventName, $event);
 
         return $event;
@@ -94,14 +93,14 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
     {
         // Fucking lolz :)
         var tmp, tmp_list, tmp_list_key;
-        
+
         if !isset $this->listeners[$eventName] {
             let tmp = [];
 
             // We copy the full array manualy just so we can add an entry.
             // This is shit, Zephir can't handle let $this->listeners[$eventName] = []; !!!
             for tmp_list_key, tmp_list in $this->listeners {
-                if tmp_list != NULL || !empty(tmp_list) {
+                if !is_null(tmp_list) || !empty(tmp_list) {
                     let tmp[tmp_list_key] = tmp_list;
                 }
             }
@@ -110,16 +109,33 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
             let $this->listeners = tmp;
         }
 
-        if !isset $this->listeners[$eventName][$priority] {
+        if !isset $this->listeners[$eventName][$priority] || is_null($this->listeners[$eventName][$priority]) {
             let $this->listeners[$eventName][$priority] = [];
         }
 
+
+//var_dump(typeof $this->listeners[$eventName][$priority]);
+//var_dump($priority);
+
         array_push($this->listeners[$eventName][$priority], $listener);
-        
+
         if isset $this->sorted[$eventName] {
-            //let $this->sorted[$eventName] = [];
-            unset($this->sorted[$eventName]);
+            $this->zephirRemoveSortedEvent($eventName);
         }
+    }
+
+    protected function zephirRemoveSortedEvent(string $eventName)
+    {
+        var $new_sorted, $tmp_key, $tmp_listener;
+        let $new_sorted = [];
+
+        for $tmp_key, $tmp_listener in $this->sorted {
+            if ($tmp_key !== $eventName) {
+                let $new_sorted[] = $tmp_listener;
+            }
+        }
+
+        let $this->sorted = $new_sorted;
     }
 
     /**
@@ -128,6 +144,7 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
     public function removeListener($eventName, $listener) -> void
     {
         var $key, $priority, $listeners;
+        var $new_listeners, $tmp_key, $tmp_listener;
 
         if !isset $this->listeners[$eventName] {
             return;
@@ -137,12 +154,28 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
             let $key = array_search($listener, $listeners, true);
             if ($key !== false) {
                 //var_dump($eventName, $priority, $key);
-                //unset($this->listeners[$eventName][$priority][$key]);
-                //unset($this->sorted[$eventName]);
-                let $this->listeners[$eventName][$priority][$key] = [];
-                let $this->sorted[$eventName] = [];
+
+                // build the new array (zephir sux on this)
+                let $new_listeners = [];
+                for $tmp_key, $tmp_listener in $this->listeners[$eventName][$priority] {
+                    if ($tmp_key !== $key) {
+                        let $new_listeners[] = $tmp_listener;
+                    }
+                }
+                let $this->listeners[$eventName][$priority] = $new_listeners;
+
+
+                $this->zephirRemoveSortedEvent($eventName);
+
+
+//                unset($this->listeners[$eventName][$priority][$key]);
+//                unset($this->sorted[$eventName]);
+
             }
         }
+
+//                var_dump($this->listeners);
+//                var_dump($this->sorted);
     }
 
     /**
@@ -217,12 +250,30 @@ class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatc
      */
     protected function sortListeners(string $eventName) -> void
     {
+        var tmp_key, tmp_listener, clean_list;
+
         let $this->sorted[$eventName] = [];
 
         if isset $this->listeners[$eventName] && !empty $this->listeners[$eventName] {
             krsort($this->listeners[$eventName]);
 
-            // THERE IS AN ERROR HERE, we get sometime a listener            
+            // Cleanup listeners (Zephir hell)
+            let clean_list = [];
+            for tmp_key, tmp_listener in $this->listeners[$eventName] {
+                if (typeof tmp_listener === "array") {
+                    let clean_list[] = tmp_listener;
+                }
+            }
+
+            if (count(clean_list) > 0) {
+//                let $this->sorted[$eventName] = call_user_func_array("array_merge", clean_list);
+            } else {
+//                let $this->sorted[$eventName] = [];
+            }
+
+
+            // THERE IS AN ERROR HERE, we get sometime a listener
+            //var_dump(array_keys($this->listeners[$eventName][0]));
             let $this->sorted[$eventName] = call_user_func_array("array_merge", $this->listeners[$eventName]);
         }
     }
