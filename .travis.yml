@@ -8,9 +8,9 @@ before_install:
 # TODO: fix the Zephir version via Composer
 install:
   - cd /tmp
-  - wget https://github.com/json-c/json-c/archive/master.zip -O json-c
+  - wget https://github.com/json-c/json-c/archive/0eedf3802fad2d41e45eecd92af529440f0d7d3a.zip -O json-c
   - unzip -q json-c
-  - cd json-c-master
+  - cd json-c-0eedf3802fad2d41e45eecd92af529440f0d7d3a
   - sh autogen.sh
   - ./configure
   - make
